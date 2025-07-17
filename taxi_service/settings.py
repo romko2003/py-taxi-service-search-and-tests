@@ -121,4 +121,3 @@ LOGGING = {
         "level": "WARNING",
     },
 }
-тт
