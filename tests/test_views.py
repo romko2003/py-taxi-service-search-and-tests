@@ -5,38 +5,55 @@ from taxi.models import Driver, Car, Manufacturer
 
 class SearchTests(TestCase):
     def setUp(self):
-        self.driver1 = Driver.objects.create_user(username="johnny",
-                                                  password="pass",
-                                                  license_number="ABC12345")
-        self.driver2 = Driver.objects.create_user(username="sarah",
-                                                  password="pass",
-                                                  license_number="XYZ67890")
-
-        self.car1 = Car.objects.create(model="Tesla X",
-                                       brand="Tesla")
-        self.car2 = Car.objects.create(model="Toyota Corolla",
-                                       brand="Toyota")
-
+        # Manufacturers
         self.manufacturer1 = \
-            (Manufacturer.objects.create(name="Tesla",
-                                         country="USA"))
+            (Manufacturer.objects.create(
+                name="Tesla",
+                country="USA"))
         self.manufacturer2 = \
-            (Manufacturer.objects.create(name="Toyota", country="Japan"))
+            (Manufacturer.objects.create(
+                name="Toyota",
+                country="Japan"))
+
+        # Cars
+        self.car1 = Car.objects.create(
+            model="Tesla X",
+            manufacturer=self.manufacturer1)
+        self.car2 = Car.objects.create(
+            model="Corolla",
+            manufacturer=self.manufacturer2)
+
+        # Drivers
+        self.driver1 = Driver.objects.create_user(
+            username="johnny",
+            password="pass",
+            license_number="ABC12345",
+            first_name="John",
+            last_name="Doe"
+        )
+        self.driver2 = Driver.objects.create_user(
+            username="sarah",
+            password="pass",
+            license_number="XYZ67890",
+            first_name="Sarah",
+            last_name="Smith"
+        )
 
     def test_driver_search(self):
-        response = (self.client.get(reverse("taxi:driver-list"),
-                                    {"username": "john"}))
+        response = self.client.get(reverse("taxi:driver-list"),
+                                   {"username": "john"})
         self.assertContains(response, "johnny")
         self.assertNotContains(response, "sarah")
 
     def test_car_search(self):
         response = self.client.get(reverse("taxi:car-list"),
-                                   {"model": "Tesla"})
+                                   {"model": "Tes"})
         self.assertContains(response, "Tesla X")
-        self.assertNotContains(response, "Toyota Corolla")
+        self.assertNotContains(response, "Corolla")
 
     def test_manufacturer_search(self):
-        response = self.client.get(reverse("taxi:manufacturer-list"),
-                                   {"name": "Toyota"})
+        response = \
+            (self.client.get(reverse("taxi:manufacturer-list"),
+                             {"name": "Toyota"}))
         self.assertContains(response, "Toyota")
         self.assertNotContains(response, "Tesla")
