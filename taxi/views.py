@@ -1,6 +1,12 @@
+from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Driver, Car, Manufacturer
+from .forms import DriverForm, DriverLicenseUpdateForm, CarForm
+
+
+def index(request):
+    return render(request, "taxi/index.html")
 
 
 class DriverListView(LoginRequiredMixin, generic.ListView):
@@ -10,10 +16,8 @@ class DriverListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        search_query = self.request.GET.get("username", "")
-        if search_query:
-            queryset = queryset.filter(username__icontains=search_query)
-        return queryset
+        query = self.request.GET.get("username", "")
+        return queryset.filter(username__icontains=query)
 
 
 class CarListView(LoginRequiredMixin, generic.ListView):
@@ -23,10 +27,8 @@ class CarListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        search_query = self.request.GET.get("model", "")
-        if search_query:
-            queryset = queryset.filter(model__icontains=search_query)
-        return queryset
+        query = self.request.GET.get("model", "")
+        return queryset.filter(model__icontains=query)
 
 
 class ManufacturerListView(LoginRequiredMixin, generic.ListView):
@@ -36,7 +38,5 @@ class ManufacturerListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        search_query = self.request.GET.get("name", "")
-        if search_query:
-            queryset = queryset.filter(name__icontains=search_query)
-        return queryset
+        query = self.request.GET.get("name", "")
+        return queryset.filter(name__icontains=query)

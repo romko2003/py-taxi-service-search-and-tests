@@ -17,15 +17,15 @@ class SearchTests(TestCase):
         self.car2 = Car.objects.create(model="Toyota Corolla",
                                        brand="Toyota")
 
-        self.manufacturer1 = Manufacturer.objects.create(name="Tesla",
-                                                         country="USA")
-        self.manufacturer2 = Manufacturer.objects.create(name="Toyota",
-                                                         country="Japan")
+        self.manufacturer1 = \
+            (Manufacturer.objects.create(name="Tesla",
+                                         country="USA"))
+        self.manufacturer2 = \
+            (Manufacturer.objects.create(name="Toyota", country="Japan"))
 
     def test_driver_search(self):
-        response = (
-            self.client.get(reverse("taxi:driver-list"),
-                            {"username": "john"}))
+        response = (self.client.get(reverse("taxi:driver-list"),
+                                    {"username": "john"}))
         self.assertContains(response, "johnny")
         self.assertNotContains(response, "sarah")
 
