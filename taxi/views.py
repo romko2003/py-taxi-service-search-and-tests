@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404
 from .models import Driver, Car, Manufacturer
 from .forms import (DriverForm,
                     DriverLicenseUpdateForm, CarForm, ManufacturerForm)
@@ -49,15 +49,17 @@ class CarDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = "taxi/car_confirm_delete.html"
     success_url = reverse_lazy("taxi:car-list")
 
-    def toggle_assign_to_car(request, pk):
-        car = get_object_or_404(Car, pk=pk)
 
-        if request.user in car.drivers.all():
-            car.drivers.remove(request.user)
-        else:
-            car.drivers.add(request.user)
+def toggle_assign_to_car(request, pk):
+    car = get_object_or_404(Car, pk=pk)
 
-        return redirect("taxi:car-detail", pk=pk)
+    if request.user in car.drivers.all():
+        car.drivers.remove(request.user)
+    else:
+        car.drivers.add(request.user)
+
+    return redirect("taxi:car-detail", pk=pk)
+
 
 # 🧑‍✈️ Drivers
 class DriverListView(LoginRequiredMixin, generic.ListView):
