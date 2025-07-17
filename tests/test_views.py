@@ -6,38 +6,31 @@ from taxi.models import Driver, Car, Manufacturer
 class SearchTests(TestCase):
     def setUp(self):
         # Manufacturers
-        self.manufacturer1 = \
-            (Manufacturer.objects.create(
-                name="Tesla",
-                country="USA"))
-        self.manufacturer2 = \
-            (Manufacturer.objects.create(
-                name="Toyota",
-                country="Japan"))
+        self.manufacturer1 = (
+            Manufacturer.objects.create(name="Tesla",
+                                        country="USA"))
+        self.manufacturer2 = (
+            Manufacturer.objects.create(name="Toyota",
+                                        country="Japan"))
 
         # Cars
-        self.car1 = Car.objects.create(
-            model="Tesla X",
-            manufacturer=self.manufacturer1)
-        self.car2 = Car.objects.create(
-            model="Corolla",
-            manufacturer=self.manufacturer2)
+        self.car1 = Car.objects.create(model="Tesla X",
+                                       manufacturer=self.manufacturer1)
+        self.car2 = Car.objects.create(model="Corolla",
+                                       manufacturer=self.manufacturer2)
 
         # Drivers
         self.driver1 = Driver.objects.create_user(
-            username="johnny",
-            password="pass",
-            license_number="ABC12345",
-            first_name="John",
-            last_name="Doe"
+            username="johnny", password="pass",
+            license_number="ABC12345"
         )
         self.driver2 = Driver.objects.create_user(
-            username="sarah",
-            password="pass",
-            license_number="XYZ67890",
-            first_name="Sarah",
-            last_name="Smith"
+            username="sarah", password="pass",
+            license_number="XYZ67890"
         )
+
+        # ✅ Login
+        self.client.login(username="johnny", password="pass")
 
     def test_driver_search(self):
         response = self.client.get(reverse("taxi:driver-list"),
