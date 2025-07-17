@@ -62,10 +62,7 @@ class DriverForm(UserCreationForm):
 
     def clean_license_number(self):
         license_number = self.cleaned_data["license_number"]
-        if not re.fullmatch(r"[A-Z]{3}\d{5}", license_number):
-            raise ValidationError("License must have 3 "
-                                  "uppercase letters followed by 5 digits.")
-        return license_number
+        return validate_license_number(license_number)
 
 
 class ManufacturerForm(forms.ModelForm):
